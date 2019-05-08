@@ -10,8 +10,7 @@ import { watchFetchRequest as watchFetchRequestAuthors} from './authors/sagas'
 
 function* handleFetch(params: ReturnType<typeof fetchRequest>) {
   try {
-    // почему-то не работает передача параметров, пока вручную делаю пейджинг
-    const res = yield call(callApi, 'get', '/items?_page=' + params.payload.page);
+    const res = yield call(callApi, 'get', '/items', params.payload);
     if (res.error) {
       yield put(fetchError(res.error))
     } else {

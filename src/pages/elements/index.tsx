@@ -39,7 +39,10 @@ interface RouteParams {
 }
 
 interface State {
-  page: number
+  page: number,
+  type?: number,
+  popular: boolean,
+  author? : number
 }
 
 type AllProps = PropsFromState & PropsFromDispatch & ConnectedReduxProps & RouteComponentProps<RouteParams>
@@ -48,31 +51,65 @@ class ElementsIndexPage extends React.Component<AllProps, State> {
   constructor(props: AllProps){
     super(props);
 
+    this.handleSortChange = this.handleSortChange.bind(this);
     this.handlePageChange = this.handlePageChange.bind(this);
+    this.handleTypeChange = this.handleTypeChange.bind(this);
+    this.handleAuthorChange = this.handleAuthorChange.bind(this);
 
     this.state = {
-      page: 1
+      page: 1,
+      popular: false
     }
   }
 
-  handlePageChange(pageNumber: number) {
+  handleSortChange() {
     let that = this;
-    this.setState({page: pageNumber}, function () {
+    that.setState({popular: !that.state.popular}, () => {
       that.fetchData();
     });
   }
 
-  public componentDidMount() {
+  handlePageChange(pageNumber: number) {
+    let that = this;
+    that.setState({page: pageNumber}, () => {
+      that.fetchData();
+    });
+  }
+
+  handleTypeChange = (event: any) => {
+    let that = this;
+    that.setState({type: event.target.value}, () => {
+      that.fetchData();
+    });
+  }
+
+  handleAuthorChange(event: any) {
+    let that = this;
+    that.setState({author: event.target.value}, () => {
+      that.fetchData();
+    });
+  }
+
+  componentWillMount(){
     this.props.fetchRequestPreviews();
     this.props.fetchRequestAuthors();
     this.props.fetchRequestTypes();
     this.props.fetchRequestTags();
+  }
 
+  componentDidMount(){
     this.fetchData();
   }
 
-  private fetchData() {
-    this.props.fetchRequest(this.state);
+  private fetchData(){
+    let data = {
+      _page: this.state.page,
+      author: this.state.author,
+      type: this.state.type,
+      _sort: 'download',
+      _order: this.state.popular ? 'desc' : 'asc'
+    };
+    this.props.fetchRequest(data);
   }
 
   public render() {
@@ -82,7 +119,7 @@ class ElementsIndexPage extends React.Component<AllProps, State> {
       <div className='result'>
       <div className="filters">
       <div className='custom-select'>
-      <select>
+      <select onChange={this.handleAuthorChange}>
       <option value="">Все авторы</option>
       {authors &&
         authors.map(item => {
@@ -96,7 +133,7 @@ class ElementsIndexPage extends React.Component<AllProps, State> {
         </div>
 
         <div className='custom-select'>
-        <select>
+        <select onChange={this.handleTypeChange}>
         <option value="">Все типы</option>
         {types &&
           types.map(item => {
@@ -108,7 +145,9 @@ class ElementsIndexPage extends React.Component<AllProps, State> {
           })}
           </select>
           </div>
-          <button>Сначала популярные</button>
+          <button onClick={this.handleSortChange} 
+            className={(this.state.popular ? 'active' : '')}>Сначала популярные
+          </button>
           </div>
           <div className="items">
           {data &&
