@@ -146,7 +146,7 @@ class ElementsIndexPage extends React.Component<AllProps, State> {
           </select>
           </div>
           <button onClick={this.handleSortChange} 
-            className={(this.state.popular ? 'active' : '')}>Сначала популярные
+          className={(this.state.popular ? 'active' : '')}>Сначала популярные
           </button>
           </div>
           <div className="items">
@@ -155,6 +155,7 @@ class ElementsIndexPage extends React.Component<AllProps, State> {
               return (
                 <div className="item" key={'item_' +item.id}>
                 <div className="previews">
+                <Link to={`/elements/${item.id}`}>
                 <ul>
                 {item.Previews &&
                   item.Previews.map(preview => {
@@ -163,6 +164,7 @@ class ElementsIndexPage extends React.Component<AllProps, State> {
                       );
                   })}
                   </ul>
+                  </Link>
                   </div>
                   <div className="info">
                   <span className="name">{item.name}</span>

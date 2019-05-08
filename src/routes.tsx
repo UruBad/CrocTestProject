@@ -15,10 +15,10 @@ const Routes: React.SFC = () => (
     <Container>
     <Menu/>
     <Switch>
-      <Route exact path="/" component={ElementsPage} />
+      <Route path="/elements" component={ElementsPage} />
       <Route exact path="/notifications" component={NotificationsPage} />
       <Route exact path="/settings" component={SettingsPage} />
-      <Route component={() => <div>Not Found</div>} />
+      <Route component={() => <div className='result'>Not Found</div>} />
     </Switch>
     </Container>
   </Root>

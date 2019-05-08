@@ -3,12 +3,13 @@ import { connect } from 'react-redux'
 import { RouteComponentProps, Route, Switch } from 'react-router-dom'
 
 import ElementsIndexPage from './elements/index'
+import ElementIndexPage from './elements/element'
 
 import { ApplicationState, ConnectedReduxProps } from '../store'
-import { IElement } from '../store/elements/types'
 
 interface PropsFromState {
-  elements: IElement[]
+  loading: boolean
+  errors?: string
 }
 
 type AllProps = PropsFromState & RouteComponentProps<{}> & ConnectedReduxProps
@@ -20,13 +21,16 @@ class ElementsPage extends React.Component<AllProps> {
     return (
       <Switch>
         <Route exact path={match.path + '/'} component={ElementsIndexPage} />
+        <Route path={match.path + '/:id'} component={ElementIndexPage} />
       </Switch>
     )
   }
 }
 
-const mapStateToProps = (store: ApplicationState) => ({
-  data: store.elements
+const mapStateToProps = ({ elements }: ApplicationState) => ({
+  loading: elements.loading,
+  errors: elements.errors
 })
+
 
 export default connect(mapStateToProps)(ElementsPage)

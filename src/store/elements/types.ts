@@ -20,11 +20,15 @@ export type ApiResponse = Record<string, any>;
 export enum ElementActionTypes {
   REQUEST = 'ELEMENTS_REQUEST',
   ERROR = 'ELEMENETS_ERROR',
-  GET_ALL = 'ELEMENTS_GET_ALL'
+  GET_ALL = 'ELEMENTS_GET_ALL',
+  SELECT_ELEMENT = 'ELEMENTS_SELECT',
+  SELECTED = 'ELEMENTS_SELECTED',
+  CLEAR_SELECTED = 'ELEMENTS_SELECT_CLEAR_SELECTED'
 }
 
 export interface IElementState {
   readonly loading: boolean
   readonly data: IElement[]
+  readonly selected?: IElement
   readonly errors?: string
 }

@@ -18,7 +18,7 @@ const Menu: React.SFC<MenuProps> = () => (
       <span className='name'>admin</span>
     </div>
       <nav>
-        <NavLink exact to="/" activeClassName={MenuLinkActive}>
+        <NavLink exact to="/elements" activeClassName={MenuLinkActive}>
           <TableChart />
           Предметы
         </NavLink>
