@@ -13,6 +13,8 @@ import Loading from '../../components/common/Loading'
 
 import { CloudDownload } from '@material-ui/icons';
 
+import Previews from '../../components/pages/elements/Previews';
+
 interface PropsFromState {
   loading: boolean
   data?: ElementsPayload
@@ -116,7 +118,6 @@ class ElementsIndexPage extends React.Component<AllProps, State> {
         })}
         </select>
         </div>
-
         <div className='custom-select'>
         <select onChange={this.handleTypeChange}>
         <option value="">Все типы</option>
@@ -141,18 +142,7 @@ class ElementsIndexPage extends React.Component<AllProps, State> {
               let type = data.types.find(findItem => { return item.type === findItem.id });
               return (
                 <div className="item" key={'item_' + item.id}>
-                <div className="previews">
-                <Link to={`/elements/${item.id}`}>
-                <ul>
-                {previews &&
-                  previews.map(preview => {
-                    return (
-                      <li key={'preview_' + item.id + '_' +  preview.id}><img src={preview.url} /></li>
-                      );
-                  })}
-                  </ul>
-                  </Link>
-                  </div>
+                  <Previews id={item.id} items={previews} />
                   <div className="info">
                   <span className="name">{item.name}</span>
                   <span className="types">{type && type.name}</span>
