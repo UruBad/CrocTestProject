@@ -1,9 +1,10 @@
 import { Reducer } from 'redux'
-import { IElementState, ElementActionTypes } from './types'
+import { IElementState, ElementActionTypes, ElementsPayload } from './types'
 
 export const initialState: IElementState = {
-  data: [],
+  data: undefined,
   errors: undefined,
+  selected: undefined,
   loading: false
 }
 
@@ -13,7 +14,7 @@ const reducer: Reducer<IElementState> = (state = initialState, action) => {
       return { ...state, loading: true, params: action.payload }
     }
     case ElementActionTypes.GET_ALL: {
-      return { ...state, data: action.payload }
+      return { ...state, loading: false,data: action.payload }
     }
     case ElementActionTypes.ERROR: {
       return { ...state, loading: false, errors: action.payload }
@@ -25,7 +26,7 @@ const reducer: Reducer<IElementState> = (state = initialState, action) => {
       return { ...state, loading: false, selected: action.payload }
     }
     case ElementActionTypes.CLEAR_SELECTED: {
-      return { ...state, selected: undefined }
+      return { ...state, loading: false, selected: undefined }
     }
     default: {
       return state

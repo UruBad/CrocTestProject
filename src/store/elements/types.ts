@@ -1,21 +1,48 @@
-import { IAuthor } from './authors/types'
-import { IType } from './types/types'
-import { ITag } from './tags/types'
-import { IPreview } from './previews/types'
+export interface ITag {
+  id: number;
+  name: string;
+}
 
-export interface IElement extends ApiResponse {
+export interface IType {
+  id: number;
+  name: string;
+}
+
+export interface IPreview {
+  id: number;
+  url: string;
+}
+
+export interface IAuthor {
+  id: number;
+  username: string;
+}
+
+export interface IElement {
   id: number;
   name: string;
   desc: string;
   downloads: number;
-
-  Author: IAuthor
-  Type: IType,
-  Tags: ITag[],
-  Previews: IPreview[]
+  author: number,
+  type: number,
+  tags: number[],
+  previews: number[]
 }
 
-export type ApiResponse = Record<string, any>;
+interface Payload {
+  authors: IAuthor[]
+  types: IType[]
+  tags: ITag[]
+  previews: IPreview[]
+}
+
+export interface ElementsPayload extends Payload {
+  elements: IElement[]
+}
+
+export interface ElementPayload extends Payload {
+  element: IElement
+}
 
 export enum ElementActionTypes {
   REQUEST = 'ELEMENTS_REQUEST',
@@ -28,7 +55,7 @@ export enum ElementActionTypes {
 
 export interface IElementState {
   readonly loading: boolean
-  readonly data: IElement[]
-  readonly selected?: IElement
+  readonly data?: ElementsPayload
+  readonly selected?: ElementPayload
   readonly errors?: string
 }

@@ -11,6 +11,7 @@ interface MenuProps {
 
 const Menu: React.SFC<MenuProps> = () => (
 <div className='menu'>
+  <div>
     <div className='user'>
       <div className='avatar'>
         <img src={avatar} />
@@ -18,19 +19,20 @@ const Menu: React.SFC<MenuProps> = () => (
       <span className='name'>admin</span>
     </div>
       <nav>
-        <NavLink exact to="/elements" activeClassName={MenuLinkActive}>
+        <NavLink to="/elements" activeClassName={MenuLinkActive}>
           <TableChart />
           Предметы
         </NavLink>
-        <NavLink to="/settings" activeClassName={MenuLinkActive}>
+        <NavLink exact to="/settings" activeClassName={MenuLinkActive}>
           <Settings />
           Настройки
         </NavLink>
-        <NavLink to="/notifications" activeClassName={MenuLinkActive}>
+        <NavLink exact to="/notifications" activeClassName={MenuLinkActive}>
           <Notifications />
           Уведомления
         </NavLink>
       </nav>
+    </div>
   </div>
 )
 

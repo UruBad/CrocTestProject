@@ -2,14 +2,16 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
 
+import Loading from '../../components/common/Loading'
+
 import { ApplicationState, ConnectedReduxProps } from '../../store'
 import { selectElement, clearSelected } from '../../store/elements/actions'
-import { IElement } from '../../store/elements/types'
+import { IElement, ElementPayload } from '../../store/elements/types'
 import { Dispatch } from 'redux'
 
 interface PropsFromState {
   loading: boolean
-  selected?: IElement
+  selected?: ElementPayload
   errors?: string
 }
 
@@ -39,45 +41,54 @@ class ElementIndexPage extends React.Component<AllProps> {
   }
 
   public render() {
-    const { selected } = this.props
+    const { loading, selected } = this.props;
+    let author, type, tags, previews;
 
-    console.log(selected, 'selected');
+    if(selected && selected.element){
+      author = selected.authors && selected.authors.find(findItem => {return findItem.id === selected.element.author});
+      type = selected.types && selected.types.find(findItem => {return findItem.id === selected.element.type});
+      tags = selected.tags && selected.tags.filter(findItem => {return selected.element.tags.includes(findItem.id)});
+      previews = selected.previews && selected.previews.filter(findItem => {return selected.element.previews.includes(findItem.id)});
+    }
 
     return (
       <div className='result'>
-      {selected && (
+      {loading && (
+        <Loading />
+        )}
+      {selected && selected.element && (
         <div className="element">
         <div className="name">
-        Название: {selected.name}
+        Название: {selected.element.name}
         </div>
         <div className="author">
-        Автор: {selected.Author && selected.Author.username}
+        Автор: {author && author.username}
         </div>
         <div className="author">
-        Автор: {selected.Type && selected.Type.name}
+        Тип: {type && type.name}
         </div>
         <div className="tags">
-        Теги: {selected.Tags && selected.Tags.map(tag => {
+        Теги: {tags && tags.map(tag => {
           return (
             <span>{tag.name}</span>
             );
         }) }
         </div>
         <div className="previews">
-        {selected.Previews && selected.Previews.map(preview => {
+        {previews && previews.map(preview => {
           return (
             <img src={preview.url} />
             );
         }) }
         </div>
         </div>
-        
+
         )}</div>
       )
   }
 }
 
-const mapStateToProps = ({ elements, authors, types, tags, previews }: ApplicationState) => {
+const mapStateToProps = ({ elements }: ApplicationState) => {
   return {
     loading: elements.loading,
     errors: elements.errors,

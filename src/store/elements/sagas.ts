@@ -3,16 +3,22 @@ import { ElementActionTypes } from './types'
 import { fetchError, fetchSuccess, fetchRequest, selectElement, elementSelected } from './actions'
 import { callApi } from '../../utils/api'
 
-import { watchFetchRequest as watchFetchRequestPreviews} from './previews/sagas'
-import { watchFetchRequest as watchFetchRequestTypes} from './types/sagas'
-import { watchFetchRequest as watchFetchRequestTags} from './tags/sagas'
-import { watchFetchRequest as watchFetchRequestAuthors} from './authors/sagas'
+function* getDictionaries(){
+  const authors = yield call(callApi, 'get', '/authors');
+  const types = yield call(callApi, 'get', '/types');
+  const tags = yield call(callApi, 'get', '/tags');
+  const previews = yield call(callApi, 'get', '/previews');
+
+  return { authors, types, tags, previews };
+}
 
 function* handleFetch(params: ReturnType<typeof fetchRequest>) {
   try {
-    const res = yield call(callApi, 'get', '/items', params.payload);
-    if (res.error) {
-      yield put(fetchError(res.error))
+    var res = yield getDictionaries();
+    res.elements = yield call(callApi, 'get', '/items', params.payload);
+    
+    if (res.elements.error) {
+      yield put(fetchError(res.elements.error))
     } else {
       yield put(fetchSuccess(res))
     }
@@ -26,12 +32,12 @@ function* handleFetch(params: ReturnType<typeof fetchRequest>) {
 }
 
 function* handleSelect(params: ReturnType<typeof selectElement>) {
-  console.log(params, 'select');
   try {
-    const res = yield call(callApi, 'get', `/items/${params.payload}`)
+    var res = yield getDictionaries();
+    res.element = yield call(callApi, 'get', `/items/${params.payload}`)
 
-    if (res.error) {
-      yield put(fetchError(res.error))
+    if (res.element.error) {
+      yield put(fetchError(res.element.error))
     } else {
       yield put(elementSelected(res))
     }
@@ -53,8 +59,7 @@ function* watchSelectElement() {
 }
 
 function* elementsSaga() {
-  yield all([fork(watchFetchRequest), fork(watchSelectElement), fork(watchFetchRequestPreviews), fork(watchFetchRequestTypes),
-    fork(watchFetchRequestTags), fork(watchFetchRequestAuthors)]);
+  yield all([fork(watchFetchRequest), fork(watchSelectElement)]);
 }
 
 export default elementsSaga
